@@ -8,15 +8,20 @@ object Greeter {
     "hi.*",
     "hola.*",
     "greetings.*",
-    "salutatations.*"
+    "salutations.*",
+    "hey.*",
+    "howdy.*"
   )
 
   val greetings = List (
-    "hello",
-    "hi",
-    "hola",
-    "greetings",
-    "salutations"
+    "Hello!",
+    "Hi!",
+    "Hola!",
+    "Greetings!",
+    "Salutations!",
+    "Hi there!",
+    "Hey!",
+    "Howdy!"
   )
 }
 

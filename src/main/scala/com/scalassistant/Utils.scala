@@ -17,7 +17,7 @@ object Utils {
     val content = io.Source.fromInputStream(inputStream).mkString
     if (inputStream != null) inputStream.close
     content
-}
+  }
 
   /* Will take a List of phrase regexes to matches against a certain phrase */
   def matchesPhrase(listOfPhrases: List[String], phrase: String): Boolean = {

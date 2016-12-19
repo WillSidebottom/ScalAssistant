@@ -24,12 +24,20 @@ object Main extends App {
   val timeKeeper  = system.actorOf(Props[TimeKeeper], name = "timeKeeper")
   val weatherman  = system.actorOf(Props[Weatherman], name = "weatherman")
 
+  /* print a greeting on app startup */
+  println("Hello, I am ScalAssistant, a command line assistant written in Scala.")
+  println("I am still in testing, so let me explain what I can do. I can :")
+  println("- Respond to greetings")
+  println("- Retrieve local time and date")
+  println("- Retrieve weather conditions for a specified location")
+  println("With that said, how may I assist you?")
+
   /* create a scanner for getting input */
   val scanner = new Scanner(System.in)
 
   /* continuously loop, printing a prompt, accepting input, then send it to be processed by other actors. WAITS FOR A RESPONSE*/
   while (true) {
-  	print("\nscalai: ")                                                     
+  	print("\nScalAssistant: ")                                                     
   	val input = scanner.nextLine                                                 
     val future = monitor ? ConsoleMessage(input)
     val result = Await.result(future, timeout.duration).asInstanceOf[PromptUser]

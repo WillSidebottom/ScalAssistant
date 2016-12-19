@@ -8,13 +8,6 @@ import org.json4s.jackson.JsonMethods._
 import scala.util.{Try, Success, Failure}
 
 object Weatherman {
-  case class Condition(code: Option[String], date: Option[String], temp: Option[String], text: Option[String])
-  case class Item(condition: Option[Condition])
-  case class Channel(item: Option[Item])
-  case class Results(channel: Option[Channel])
-  case class Query(count: Option[Int], created: Option[String], lang: Option[String], results: Option[Results])
-  case class Weather(query: Option[Query])
-
   val phrasesWeRespondTo = List(
     "weather forecast.*",
     "weather.*",
@@ -33,6 +26,7 @@ object Weatherman {
 
 class Weatherman extends Actor with ActorLogging {
   import Weatherman._
+  import WeatherUnderground._
 
   def receive = {
     case MatchPhrase(phrase) =>
@@ -54,28 +48,26 @@ class Weatherman extends Actor with ActorLogging {
     val weatherRegex = "weather|forecast".r
     val location = weatherRegex.replaceAllIn(phrase, "").trim
     location match {
-      case "" =>
-        getWeatherConditions(buildWeatherUrl())
-      case _ =>
-        getWeatherConditions(buildWeatherUrl(location), location)
+      case "" => getWeatherConditions(buildWeatherUrl())
+      case _ => getWeatherConditions(buildWeatherUrl(location))
     }
   }
 
   /* build a valid yahoo query url based on the specified location */
   def buildWeatherUrl(location: String = "tallahassee, fl"): String = {
-    val baseUrl = "https://query.yahooapis.com/v1/public/yql?q="
-    val locationQuery = "(select woeid from geo.places where text=\"%s\")".format(location)
-    val yqlQuery = s"select item.condition from weather.forecast where woeid in ${locationQuery}"
+    val cityAndState = location.split(",").map(_.trim)
+    val city = cityAndState(0)
+    val state = cityAndState(1)
     
-    baseUrl + URLEncoder.encode(yqlQuery, "UTF-8") + "&format=json"
+    s"http://api.wunderground.com/api/095476a7964abce1/conditions/q/${state}/${city}.json"
   }
 
   /* attempt to get weather conditions for specified location */
-  def getWeatherConditions(url: String, location: String = "tallahassee, fl"): List[String] = {
+  def getWeatherConditions(url: String): List[String] = {
     Try(Utils.getContent(url)) match {
       case Success(jsonStr) =>  
         val weatherObject = Utils.parseJsonString[Weather](jsonStr)
-        formatResult(weatherObject, location)
+        formatResult(weatherObject)
       
       case Failure(error) => 
         log.error(s"WeatherMan recieved this error ${error.getMessage}")
@@ -84,30 +76,19 @@ class Weatherman extends Actor with ActorLogging {
   }
 
   /* format the retrieved weather result */
-  private def formatResult(weatherObject: Option[Weather] = None, location: String): List[String] = {
-    def getConditions(weather: Option[Weather]): Option[Condition] = 
-      for {
-        w <- weather
-        q <- w.query
-        r <- q.results
-        c <- r.channel
-        i <- c.item
-        c <- i.condition
-      } yield c
-
-    val currentConditions: Option[Condition] = getConditions(weatherObject)
-    currentConditions match {
-      case Some(conditions) =>
-        List(
-          s"Weather Forecast for ${location}: ",
-          s"Current date: ${conditions.date getOrElse ""}",
-          s"Current weather condition(s): ${conditions.text getOrElse ""}",
-          s"Current temperature (deg): ${conditions.temp getOrElse ""}"
-        )
-
-      case None =>
-        List("Sorry, could not retrieve informations about that location")
-    }
+  private def formatResult(weatherObject: Option[Weather] = None): List[String] = weatherObject match {
+    case Some(weather) =>
+      List(
+        s"Retrieved weather conditions for: ${weather.current_observation.display_location.full}",
+        s"${weather.current_observation.observation_time}",
+        s"Current conditions are: ${weather.current_observation.weather}",
+        s"Current temperature is: ${weather.current_observation.temperature_string}",
+        s"It feels like: ${weather.current_observation.feelslike_string}",
+        s"Humidity: ${weather.current_observation.relative_humidity}",
+        s"Wind: ${weather.current_observation.wind_string}"
+      )
+    case None =>
+      List("Sorry, the weather conditions could not be retireved for that location")
   }
 
 }
