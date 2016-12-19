@@ -9,12 +9,15 @@ object TimeKeeper {
   val timePhrases = List (
     "time.*",
     "current time.*",
-    "what is the time.*"
+    "what is the time.*",
+    "What is the current time.*"
   )
 
   val datePhrases = List (
     "date.*",
-    "what is today's date.*"
+    "what is today's date.*",
+    "what is the date.*",
+    "what is the current date.*"
   )
 }
 
