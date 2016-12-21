@@ -19,8 +19,8 @@ object Main extends App {
   implicit val timeout = Timeout(20 seconds)
 
   /* create actors in our system */
-  val monitor     = system.actorOf(Props[Monitor], name = "monitor")
-  val greeter     = system.actorOf(Props[Greeter], name = "greeter")
+  val monitor     = system.actorOf(Props[Monitor]   , name = "monitor")
+  val greeter     = system.actorOf(Props[Greeter]   , name = "greeter")
   val timeKeeper  = system.actorOf(Props[TimeKeeper], name = "timeKeeper")
   val weatherman  = system.actorOf(Props[Weatherman], name = "weatherman")
 
@@ -35,12 +35,16 @@ object Main extends App {
   /* create a scanner for getting input */
   val scanner = new Scanner(System.in)
 
+  var flag: Boolean = false
+
   /* continuously loop, printing a prompt, accepting input, then send it to be processed by other actors. WAITS FOR A RESPONSE*/
-  while (true) {
+  while (flag == false) {
   	print("\nScalAssistant: ")                                                     
   	val input = scanner.nextLine                                                 
     val future = monitor ? ConsoleMessage(input)
-    val result = Await.result(future, timeout.duration).asInstanceOf[PromptUser]
+    val result = Await.result(future, timeout.duration).asInstanceOf[Response]
+    if (result.msg == "terminate") flag = true
   }
 
+  system.terminate
 }
