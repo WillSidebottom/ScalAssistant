@@ -18,7 +18,7 @@ lazy val root = (project in file("."))
     scalacOptions ++= Seq(
       optionOne,
       optionTwo
-    )
+    ),
     libraryDependencies ++= Seq(
       akka,
       scalatest,
