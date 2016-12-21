@@ -1,7 +1,6 @@
 package com.scalassistant
 
-import akka.actor.{ ActorRef, Props, Actor, ActorLogging }
-import akka.event.Logging
+import akka.actor.{ Actor, ActorLogging }
 import java.util.Calendar
 import java.text.SimpleDateFormat
 
@@ -13,11 +12,29 @@ object TimeKeeper {
     "What is the current time.*"
   )
 
+  val validTimePhrases = List (
+    "I don't have a watch, but I do live inside your computer! Here are some valid time phrases:",
+    "time",
+    "current time",
+    "what is the time?",
+    "what is the current time?"
+  )
+
   val datePhrases = List (
     "date.*",
+    "current date.*",
     "what is today's date.*",
     "what is the date.*",
     "what is the current date.*"
+  )
+
+  val validDatePhrases = List (
+    "I have you covered on the local date. Here are a few valid date phrases:",
+    "date",
+    "current date",
+    "what is today's date?",
+    "what is the date?",
+    "what is the current date?"
   )
 }
 

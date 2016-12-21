@@ -15,12 +15,11 @@ object Weatherman {
   )
 
   val validWeatherPhrases = List(
+    "Ask me anything about the weather in the United States! Here are the formats for a date request:",
     "weather <location>",
     "weather forecast <location>",
     "forecast <location>",
-    "weather tallahassee, fl",
-    "weather miami",
-    "weather forecast tampa"
+    "EXAMPLE: weather tallahassee, fl"
   )
 }
 
@@ -40,7 +39,7 @@ class Weatherman extends Actor with ActorLogging {
       sender ! PhraseHandled(handled)
 
       case unknown =>
-        log.info("Weatherman: received an unknown message")
+        log.info("Weatherman: received an unknown message " + unknown)
   }
 
   /* attempt to process the given phrase */

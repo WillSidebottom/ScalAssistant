@@ -15,6 +15,15 @@ object Terminator {
     "quit.*",
     "terminate.*"
   )
+
+  val validTerminationPhrases = List (
+    "I guess we can only have so much fun! Here is how you can turn me off:",
+    "goodbye",
+    "turn off",
+    "exit",
+    "quit",
+    "terminate"
+  )
 }
 
 class Monitor extends Actor with ActorLogging{
@@ -24,9 +33,10 @@ class Monitor extends Actor with ActorLogging{
   val greeter    = context.actorSelection("/user/greeter")
   val timeKeeper = context.actorSelection("/user/timeKeeper")
   val weatherman = context.actorSelection("/user/weatherman")
+  val helper     = context.actorSelection("/user/helper")
 
   /* create a list of those actors */ 
-  val workers = List(greeter, timeKeeper, weatherman)
+  val workers = List(greeter, timeKeeper, weatherman, helper)
 
   def receive = {
   	case ConsoleMessage(msg: String) => 

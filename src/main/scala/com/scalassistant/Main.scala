@@ -23,14 +23,12 @@ object Main extends App {
   val greeter     = system.actorOf(Props[Greeter]   , name = "greeter")
   val timeKeeper  = system.actorOf(Props[TimeKeeper], name = "timeKeeper")
   val weatherman  = system.actorOf(Props[Weatherman], name = "weatherman")
+  val helper      = system.actorOf(Props[Helper],    name = "helper")
 
   /* print a greeting on app startup */
-  println("Hello, I am ScalAssistant, a command line assistant written in Scala.")
-  println("I am still in testing, so let me explain what I can do. I can :")
-  println("- Respond to greetings")
-  println("- Retrieve local time and date")
-  println("- Retrieve weather conditions for a specified location")
-  println("With that said, how may I assist you?")
+  println("Hello, I am ScalAssistant, a command line assistant written in Scala!")
+  println("I am still in testing, so my functionality is limited.")
+  println("If you are a new user and unfamiliar with my interface, try using the \"help\" command.")
 
   /* create a scanner for getting input */
   val scanner = new Scanner(System.in)
