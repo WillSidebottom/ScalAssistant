@@ -1,6 +1,6 @@
 package com.scalassistant
 
-import akka.actor.{ ActorRef, Props, Actor, ActorLogging }
+import akka.actor.{ Actor, ActorLogging }
 
 object Greeter {
   val phrasesWeRespondTo = List (
@@ -22,6 +22,17 @@ object Greeter {
     "Hi there!",
     "Hey!",
     "Howdy!"
+  )
+
+  val validGreetings = List (
+    "Don't be shy! I know a few greetings out there:",
+    "hello",
+    "hi",
+    "hola",
+    "greetings",
+    "salutations",
+    "hey",
+    "howdy"
   )
 }
 
