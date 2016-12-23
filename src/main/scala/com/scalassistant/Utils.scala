@@ -6,7 +6,6 @@ import org.json4s._
 import org.json4s.jackson.JsonMethods._
 
 object Utils {
-
   /* Use this function for getting content from a RESTful URL */
   def getContent(url: String, connectTimeout: Int = 10000, readTimeout: Int = 10000, requestMethod: String = "GET") = {
     val connection = (new URL(url)).openConnection.asInstanceOf[HttpURLConnection]

@@ -19,11 +19,12 @@ object Main extends App {
   implicit val timeout = Timeout(20 seconds)
 
   /* create actors in our system */
-  val monitor     = system.actorOf(Props[Monitor]   , name = "monitor")
-  val greeter     = system.actorOf(Props[Greeter]   , name = "greeter")
-  val timeKeeper  = system.actorOf(Props[TimeKeeper], name = "timeKeeper")
-  val weatherman  = system.actorOf(Props[Weatherman], name = "weatherman")
-  val helper      = system.actorOf(Props[Helper],    name = "helper")
+  val monitor      = system.actorOf(Props[Monitor]   , name = "monitor")
+  val greeter      = system.actorOf(Props[Greeter]   , name = "greeter")
+  val timeKeeper   = system.actorOf(Props[TimeKeeper], name = "timeKeeper")
+  val weatherman   = system.actorOf(Props[Weatherman], name = "weatherman")
+  val helper       = system.actorOf(Props[Helper],    name = "helper")
+  val twitteractor = system.actorOf(Props[TwitterActor], name = "twitteractor")
 
   /* print a greeting on app startup */
   println("Hello, I am ScalAssistant, a command line assistant written in Scala!")

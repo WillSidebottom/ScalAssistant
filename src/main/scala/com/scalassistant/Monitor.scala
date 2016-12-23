@@ -34,9 +34,10 @@ class Monitor extends Actor with ActorLogging{
   val timeKeeper = context.actorSelection("/user/timeKeeper")
   val weatherman = context.actorSelection("/user/weatherman")
   val helper     = context.actorSelection("/user/helper")
+  val twitteractor = context.actorSelection("/user/twitteractor")
 
   /* create a list of those actors */ 
-  val workers = List(greeter, timeKeeper, weatherman, helper)
+  val workers = List(greeter, timeKeeper, weatherman, helper, twitteractor)
 
   def receive = {
   	case ConsoleMessage(msg: String) => 
@@ -45,7 +46,7 @@ class Monitor extends Actor with ActorLogging{
         println("See you later!")
         log.info(s"Monitor: sending shutdown message to sender")
         sender ! Response("terminate")
-      } else if (tryMatchingPhrase(msg.toLowerCase) == false) { /* check if phrase wasn't handled by workers*/
+      } else if (tryMatchingPhrase(msg) == false) { /* check if phrase wasn't handled by workers*/
         println("Sorry, I couldn't handle that phrase")
         log.info("Monitor: could not handle phrase")
         sender ! Response(msg)
