@@ -1,11 +1,10 @@
 package com.scalassistant
 
 import akka.actor.{ ActorRef, Props, Actor, ActorLogging }
-import akka.event.Logging
-import java.net.URLEncoder
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
 import scala.util.{Try, Success, Failure}
+import scala.io.Source
 
 object Weatherman {
   val phrasesWeRespondTo = List(
@@ -29,11 +28,11 @@ class Weatherman extends Actor with ActorLogging {
 
   def receive = {
     case MatchPhrase(phrase) =>
-      val handled = Utils.matchesPhrase(phrasesWeRespondTo, phrase)
+      val handled = Utils.matchesPhrase(phrasesWeRespondTo, phrase.toLowerCase)
       log.info(s"Weatherman: handled phrase = ${handled}")
       if (handled) {
         log.info("Weatherman: Attempting to process weather phrase")
-        val message = processPhrase(phrase)
+        val message = processPhrase(phrase.toLowerCase)
         message.foreach(println)
       }
       sender ! PhraseHandled(handled)
@@ -57,8 +56,13 @@ class Weatherman extends Actor with ActorLogging {
     val cityAndState = location.split(",").map(_.trim)
     val city = cityAndState(0)
     val state = cityAndState(1)
+
+    /* open up the textfile containing the api key */
+    val bufferedSource = Source.fromFile("src/main/resources/weatherunderground.txt")
+    val weatherUndergroundKey = for(string <- bufferedSource.mkString) yield string
+    bufferedSource.close
     
-    s"http://api.wunderground.com/api/095476a7964abce1/conditions/q/${state}/${city}.json"
+    s"http://api.wunderground.com/api/${weatherUndergroundKey}/conditions/q/${state}/${city}.json"
   }
 
   /* attempt to get weather conditions for specified location */

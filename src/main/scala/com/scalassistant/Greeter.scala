@@ -41,7 +41,7 @@ class Greeter extends Actor with ActorLogging {
 
   def receive = {
     case MatchPhrase(phrase) => 
-      val handled = Utils.matchesPhrase(phrasesWeRespondTo, phrase)
+      val handled = Utils.matchesPhrase(phrasesWeRespondTo, phrase.toLowerCase)
       log.info(s"Greeter: handled phrase = ${handled}")
       if (handled) println(getRandomHelloPhrase)
       log.info(s"Greeter: Attempting to send message back to Monitor")

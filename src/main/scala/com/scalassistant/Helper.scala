@@ -9,6 +9,7 @@ object Helper {
     "help time",
     "help date",
     "help weather",
+    "help twitter",
     "help exit"
   )
 
@@ -21,14 +22,15 @@ class Helper extends Actor with ActorLogging {
   import TimeKeeper._
   import Helper._
   import Terminator._
+  import TwitterActor._
 
   def receive = {
     case MatchPhrase(phrase) =>
-      val handled = Utils.matchesPhrase(List("help.*"), phrase)
+      val handled = Utils.matchesPhrase(List("help.*"), phrase.toLowerCase)
       log.info(s"Helper: handled phrase = ${handled}")
       if (handled) {
         log.info("Helper: Attempting to assist the user")
-        val message = processPhrase(phrase)
+        val message = processPhrase(phrase.toLowerCase)
         message.foreach(println)
       }
       sender ! PhraseHandled(handled)
@@ -46,6 +48,7 @@ class Helper extends Actor with ActorLogging {
       case "time"       => TimeKeeper.validTimePhrases
       case "date"       => TimeKeeper.validDatePhrases
       case "weather"    => Weatherman.validWeatherPhrases
+      case "twitter"    => TwitterActor.validTwitterPhrases
       case "exit"       => Terminator.validTerminationPhrases
       case _            => invalidRequest
     }

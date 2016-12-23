@@ -9,11 +9,11 @@ object TimeKeeper {
     "time.*",
     "current time.*",
     "what is the time.*",
-    "What is the current time.*"
+    "what is the current time.*"
   )
 
   val validTimePhrases = List (
-    "I don't have a watch, but I do live inside your computer! Here are some valid time phrases:",
+    "I don't have a watch, but I am connected to your CPU's internal clock! Here are some valid time phrases:",
     "time",
     "current time",
     "what is the time?",
@@ -43,8 +43,8 @@ class TimeKeeper extends Actor with ActorLogging {
 
   def receive = {
     case MatchPhrase(phrase) =>
-      val timeHandled = Utils.matchesPhrase(timePhrases, phrase)
-      val dateHandled = Utils.matchesPhrase(datePhrases, phrase)
+      val timeHandled = Utils.matchesPhrase(timePhrases, phrase.toLowerCase)
+      val dateHandled = Utils.matchesPhrase(datePhrases, phrase.toLowerCase)
       val handled = timeHandled || dateHandled
       log.info(s"TimeKeeper: handled phrase = ${handled}")
       if (timeHandled) println(getCurrentTime)

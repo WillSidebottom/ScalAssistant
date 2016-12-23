@@ -16,7 +16,8 @@ lazy val root = (project in file("."))
       akka,
       scalatest,
       scalactic,
-      json4sJackson
+      json4sJackson,
+      twitter
     )
   )
 
@@ -28,7 +29,8 @@ val optionOne = "-deprecation"
 val optionTwo = "-feature"
 
 //DEPENDENCIES GO HERE
-val akka	        = "com.typesafe.akka"		%% "akka-actor"		% "2.4.11"
-val scalatest		= "org.scalatest"		%% "scalatest"		% "3.0.0"	% "test"
-val scalactic		= "org.scalactic"		%% "scalactic"		% "3.0.0"
-val json4sJackson	= "org.json4s"			%% "json4s-jackson"	% "3.4.1"
+val akka	         = "com.typesafe.akka"	 %% "akka-actor"		  % "2.4.11"
+val scalatest		   = "org.scalatest"		   %% "scalatest"		    % "3.0.0"	% "test"
+val scalactic		   = "org.scalactic"		   %% "scalactic"		    % "3.0.0"
+val json4sJackson  = "org.json4s"			     %% "json4s-jackson"	% "3.4.1"
+val twitter        = "org.twitter4j"       % "twitter4j-core"   % "4.0.5"
