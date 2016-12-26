@@ -7,7 +7,7 @@ import org.json4s.jackson.JsonMethods._
 
 object Utils {
   /* Use this function for getting content from a RESTful URL */
-  def getContent(url: String, connectTimeout: Int = 10000, readTimeout: Int = 10000, requestMethod: String = "GET") = {
+  def getContent(url: String, connectTimeout: Int = 5000, readTimeout: Int = 5000, requestMethod: String = "GET") = {
     val connection = (new URL(url)).openConnection.asInstanceOf[HttpURLConnection]
     connection.setConnectTimeout(connectTimeout)
     connection.setReadTimeout(readTimeout)
@@ -16,6 +16,14 @@ object Utils {
     val content = io.Source.fromInputStream(inputStream).mkString
     if (inputStream != null) inputStream.close
     content
+  }
+
+  /* implements the getContent method in a safer way */
+  def tryGetContent(url: String): Option[String] = {
+    Try(getContent(url)) match {
+      case Success(content) => Some(content)
+      case Failure(ex) => None
+    }
   }
 
   /* Will take a List of phrase regexes to matches against a certain phrase */

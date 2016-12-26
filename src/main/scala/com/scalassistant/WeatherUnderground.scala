@@ -66,7 +66,7 @@ object WeatherUnderground {
     forecast_url: String,
     history_url: String,
     ob_url: String
-    )
+  )
   case class Image(url: String, title: String, link: String)
   case class DisplayLocation(
     full: String,
@@ -79,7 +79,7 @@ object WeatherUnderground {
     latitude: String,
     longitude: String,
     elevation: String
-    )
+  )
   case class ObservationLocation(
     full: String,
     city: String,
@@ -89,5 +89,5 @@ object WeatherUnderground {
     latitude: String,
     longitude: String,
     elevation: String
-    )
+  )
 }
