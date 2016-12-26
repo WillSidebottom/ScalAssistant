@@ -19,12 +19,12 @@ object Main extends App {
   implicit val timeout = Timeout(20 seconds)
 
   /* create actors in our system */
-  val monitor      = system.actorOf(Props[Monitor]   , name = "monitor")
-  val greeter      = system.actorOf(Props[Greeter]   , name = "greeter")
-  val timeKeeper   = system.actorOf(Props[TimeKeeper], name = "timeKeeper")
-  val weatherman   = system.actorOf(Props[Weatherman], name = "weatherman")
-  val helper       = system.actorOf(Props[Helper],    name = "helper")
-  val twitteractor = system.actorOf(Props[TwitterActor], name = "twitteractor")
+  val monitor      = system.actorOf(Props[Monitor],       name = "monitor")
+  val greeter      = system.actorOf(Props[Greeter]   ,    name = "greeter")
+  val timeKeeper   = system.actorOf(Props[TimeKeeper],    name = "timeKeeper")
+  val weatherman   = system.actorOf(Props[Weatherman],    name = "weatherman")
+  val helper       = system.actorOf(Props[Helper],        name = "helper")
+  val twitteractor = system.actorOf(Props[TwitterActor],  name = "twitteractor")
 
   /* print a greeting on app startup */
   println("Hello, I am ScalAssistant, a command line assistant written in Scala!")
@@ -34,6 +34,7 @@ object Main extends App {
   /* create a scanner for getting input */
   val scanner = new Scanner(System.in)
 
+  /* flag to check for termination */
   var flag: Boolean = false
 
   /* continuously loop, printing a prompt, accepting input, then send it to be processed by other actors. WAITS FOR A RESPONSE*/
@@ -45,5 +46,6 @@ object Main extends App {
     if (result.msg == "terminate") flag = true
   }
 
+  /* terminate the app */
   system.terminate
 }

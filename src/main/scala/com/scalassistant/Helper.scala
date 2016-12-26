@@ -41,8 +41,7 @@ class Helper extends Actor with ActorLogging {
 
   def processPhrase(phrase: String): List[String] = {
     val helpRegex = "help".r
-    val function = helpRegex.replaceAllIn(phrase, "").trim
-    function match {
+    helpRegex.replaceAllIn(phrase, "").trim match {
       case ""           => emptyHelpMessage
       case "greetings"  => Greeter.validGreetings
       case "time"       => TimeKeeper.validTimePhrases

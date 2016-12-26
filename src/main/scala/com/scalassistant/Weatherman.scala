@@ -20,6 +20,8 @@ object Weatherman {
     "forecast <location>",
     "EXAMPLE: weather tallahassee, fl"
   )
+
+  val weatherRegex = "weather|forecast".r
 }
 
 class Weatherman extends Actor with ActorLogging {
@@ -42,40 +44,35 @@ class Weatherman extends Actor with ActorLogging {
   }
 
   /* attempt to process the given phrase */
-  def processPhrase(phrase: String): List[String] = {
-    val weatherRegex = "weather|forecast".r
+  def processPhrase(phrase: String): List[String] = { 
     val location = weatherRegex.replaceAllIn(phrase, "").trim
-    location match {
-      case "" => getWeatherConditions(buildWeatherUrl())
-      case _ => getWeatherConditions(buildWeatherUrl(location))
-    }
+    getWeatherConditions(buildWeatherUrl(location)) 
   }
 
   /* build a valid yahoo query url based on the specified location */
-  def buildWeatherUrl(location: String = "tallahassee, fl"): String = {
+  def buildWeatherUrl(location: String = "tallahassee, fl"): Option[String] = {
     val cityAndState = location.split(",").map(_.trim)
-    val city = cityAndState(0)
-    val state = cityAndState(1)
-
-    /* open up the textfile containing the api key */
-    val bufferedSource = Source.fromFile("src/main/resources/weatherunderground.txt")
-    val weatherUndergroundKey = for(string <- bufferedSource.mkString) yield string
-    bufferedSource.close
-    
-    s"http://api.wunderground.com/api/${weatherUndergroundKey}/conditions/q/${state}/${city}.json"
+    if (cityAndState.size < 2) None
+    else {
+      val city = cityAndState(0)
+      val state = cityAndState(1)
+      /* open up the textfile containing the api key */
+      val bufferedSource = Source.fromFile("src/main/resources/weatherunderground.txt")
+      val weatherUndergroundKey = for(string <- bufferedSource.mkString) yield string
+      bufferedSource.close
+      /* build the url string */
+      Some(s"http://api.wunderground.com/api/${weatherUndergroundKey}/conditions/q/${state}/${city}.json")
+    }
   }
 
   /* attempt to get weather conditions for specified location */
-  def getWeatherConditions(url: String): List[String] = {
-    Try(Utils.getContent(url)) match {
-      case Success(jsonStr) =>  
-        val weatherObject = Utils.parseJsonString[Weather](jsonStr)
-        formatResult(weatherObject)
-      
-      case Failure(error) => 
-        log.error(s"WeatherMan recieved this error ${error.getMessage}")
-        List("Sorry, could not retrieve the weather")
-    }
+  def getWeatherConditions(urlString: Option[String]): List[String] = urlString match {
+    case Some(url) => 
+      val weather = Utils.tryGetContent(url) flatMap (jsonStr => Utils.parseJsonString[Weather](jsonStr)) 
+      formatResult(weather)
+    case None =>
+      log.error(s"Weatherman: Could not get url")
+      List("Sorry, could not retrieve the weather")
   }
 
   /* format the retrieved weather result */

@@ -3,7 +3,7 @@ package com.scalassistant
 import akka.actor.{ Actor, ActorLogging }
 
 object Greeter {
-  val phrasesWeRespondTo = List (
+  val phrasesWeRespondTo = List ( /* list of greetings we respond to */
     "hello.*",
     "hi.*",
     "hola.*",
@@ -13,7 +13,7 @@ object Greeter {
     "howdy.*"
   )
 
-  val greetings = List (
+  val greetings = List (  /* actual greetings we can say */
     "Hello!",
     "Hi!",
     "Hola!",
@@ -24,7 +24,7 @@ object Greeter {
     "Howdy!"
   )
 
-  val validGreetings = List (
+  val validGreetings = List ( /* Show the user what greetings we respond to */
     "Don't be shy! I know a few greetings out there:",
     "hello",
     "hi",
@@ -39,12 +39,11 @@ object Greeter {
 class Greeter extends Actor with ActorLogging {
   import Greeter._
 
-  def receive = {
+  def receive = { /* match incoming messages */
     case MatchPhrase(phrase) => 
       val handled = Utils.matchesPhrase(phrasesWeRespondTo, phrase.toLowerCase)
       log.info(s"Greeter: handled phrase = ${handled}")
       if (handled) println(getRandomHelloPhrase)
-      log.info(s"Greeter: Attempting to send message back to Monitor")
       sender ! PhraseHandled(handled)
 
     case unknown =>

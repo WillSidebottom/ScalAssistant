@@ -1,6 +1,7 @@
 package com.scalassistant
 
 import akka.actor.{ Actor, ActorLogging }
+import scala.util.{ Try, Success, Failure }
 import scala.io.Source
 import twitter4j.TwitterFactory
 import twitter4j.Twitter
@@ -62,9 +63,9 @@ class TwitterActor extends Actor with ActorLogging {
     }
   }
 
-  def postStatus(msg: String): List[String]= {
-    val status = twitter.updateStatus(msg)
-    List(s"Successfully updated the status to [ ${status.getText()} ].")
+  def postStatus(msg: String): List[String] = Try(twitter.updateStatus(msg)) match {
+    case Success(status) => List(s"Successfully updated the status to [ ${status.getText} ].")
+    case Failure(error) =>  List(s"Error posting tweet ${error}")
   }
 
   def getHomeTimeline: List[String] = {
